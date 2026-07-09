@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ruleta de Premios</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+<meta name="theme-color" content="#f7e01e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ruleta">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@600;800&family=Bebas+Neue&family=Fredoka:wght@500;700&family=Lobster&family=Montserrat:wght@600;800&family=Orbitron:wght@600;800&family=Oswald:wght@600;700&family=Pacifico&family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&family=Righteous&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Pantalla de inicio / espera -->
+  <section class="intro" id="intro">
+    <div class="intro-inner">
+      <img class="intro-logo" id="introLogo" alt="logo">
+      <h1 class="intro-title" id="introTitle"></h1>
+      <button class="intro-btn" id="introBtn">Toca para jugar</button>
+    </div>
+    <div class="intro-hint">Toca la pantalla para comenzar</div>
+  </section>
+
+  <div class="topbar">
+    <div class="play-title" id="playTitle">
+      <img id="playTitleImg" alt="logo">
+      <span id="playTitleText">Ruleta</span>
+    </div>
+    <button class="gear" id="gearBtn" aria-label="Configuración">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.4" fill="var(--panel)"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.4" fill="var(--panel)"/></svg>
+    </button>
+  </div>
+  <main class="stage">
+    <div class="wheel-wrap">
+      <svg class="pointer" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+          <stop id="gs0" offset="0" stop-color="#fbeaa0"/><stop id="gs1" offset=".5" stop-color="#d9b44a"/><stop id="gs2" offset="1" stop-color="#a9822c"/>
+        </linearGradient></defs>
+        <path id="pArrow" d="M30 75 C12 45 5 35 5 25 A 25 25 0 1 1 55 25 C55 35 48 45 30 75 Z" fill="url(#gold)" stroke="#8a6a20" stroke-width="2"/>
+        <circle id="pJewel" cx="30" cy="25" r="7" fill="#fff7d8" stroke="#8a6a20" stroke-width="1"/>
+      </svg>
+      <canvas id="wheel" width="900" height="900"></canvas>
+      <div class="hub"><img id="hubImg" alt="logo"><span class="star" id="hubStar">★</span></div>
+    </div>
+    <button class="spin-btn" id="spinBtn">Girar</button>
+  </main>
+
+  <section class="config" id="config" aria-hidden="true">
+    <div class="config-head">
+      <h1>Configuración</h1>
+      <button class="done-btn" id="doneBtn">Listo</button>
+    </div>
+    <div class="config-tabs" id="configTabs">
+      <button class="tab-pill active" data-tab="plantilla"><span class="ic">🎯</span>Plantilla</button>
+      <button class="tab-pill" data-tab="diseno"><span class="ic">🎨</span>Diseño</button>
+      <button class="tab-pill" data-tab="textos"><span class="ic">🔤</span>Textos</button>
+      <button class="tab-pill" data-tab="premios"><span class="ic">🏆</span>Premios</button>
+      <button class="tab-pill" data-tab="ajustes"><span class="ic">🔧</span>Ajustes</button>
+    </div>
+    <div class="config-body">
+
+      <!-- ---------- Plantilla ---------- -->
+      <div class="tab-panel active" data-panel="plantilla">
+        <div class="field">
+          <label>Plantilla</label>
+          <div class="pills" id="pills"></div>
+          <div class="media-actions" style="margin-top:10px;">
+            <button class="mini-btn" id="exportTplBtn">⬇️ Exportar plantilla</button>
+            <button class="mini-btn ghost" id="importTplBtn">⬆️ Importar plantilla</button>
+          </div>
+          <p class="rec-hint">Exporta la plantilla activa a un archivo .json para respaldarla o usarla en otra ruleta. Importar reemplaza la plantilla activa.</p>
+        </div>
+        <div class="field">
+          <label>Nombre de la plantilla</label>
+          <input class="text-in" id="tplName" placeholder="Ej. Cliente Barceló">
+        </div>
+      </div>
+
+      <!-- ---------- Diseño ---------- -->
+      <div class="tab-panel" data-panel="diseno">
+        <div class="field">
+          <label>Estilo del Encabezado</label>
+          <div class="slider-wrap">
+            <label style="font-size:11px; color:var(--muted); margin:0;">Tamaño:</label>
+            <input type="range" class="range-in" id="headerSizeIn" min="16" max="42" step="1">
+            <span class="range-val" id="headerSizeVal">22px</span>
+          </div>
+          <div class="color-grid" style="margin-top:10px;">
+            <div class="color-cell"><input type="color" id="cHeaderColor"><span>Color del encabezado</span></div>
+          </div>
+          <div class="media-row" style="margin-top:14px;">
+            <div class="media-prev" id="headerLogoPrev">＋</div>
+            <div class="media-actions">
+              <button class="mini-btn" id="headerLogoUpload">Logo del encabezado</button>
+              <button class="mini-btn ghost" id="headerLogoRemove">Quitar</button>
+            </div>
+          </div>
+          <p class="rec-hint">Si subes un logo, reemplaza el texto del encabezado. Recomendado: <b>600×200 px</b> (horizontal), formato <b>PNG</b> con fondo transparente.</p>
+        </div>
+
+        <div class="field">
+          <label>Tipografía</label>
+          <select class="text-in" id="fontSel"></select>
+        </div>
+
+        <div class="field">
+          <label>Estilo del Botón</label>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <div style="flex: 0 0 95px; text-align: center;">
+              <input class="text-in" type="number" id="btnBorderSizeIn" min="0" max="10" step="1" style="text-align:center; padding:13px 5px;" placeholder="Borde px">
+            </div>
+          </div>
+          <div class="color-grid">
+            <div class="color-cell"><input type="color" id="cBtnBg"><span>Fondo Botón</span></div>
+            <div class="color-cell"><input type="color" id="cBtnColor"><span>Texto Botón</span></div>
+            <div class="color-cell"><input type="color" id="cBtnBorder"><span>Color Borde</span></div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Ancho:</label><input type="range" class="range-in" id="btnWidthIn" min="100" max="400" step="10"><span class="range-val" id="btnWidthVal">Auto</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Alto:</label><input type="range" class="range-in" id="btnHeightIn" min="40" max="100" step="5"><span class="range-val" id="btnHeightVal">Auto</span></div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Radio:</label><input type="range" class="range-in" id="btnRadiusIn" min="0" max="50" step="1"><span class="range-val" id="btnRadiusVal">999px</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Text Size:</label><input type="range" class="range-in" id="btnTextSizeIn" min="12" max="36" step="1"><span class="range-val" id="btnTextSizeVal">21px</span></div>
+          </div>
+          <div class="slider-wrap" style="margin-top:10px;"><label style="font-size:11px;color:var(--muted)">Sombra (difuminado):</label><input type="range" class="range-in" id="btnShadowIn" min="0" max="40" step="1"><span class="range-val" id="btnShadowVal">Normal</span></div>
+        </div>
+
+        <div class="field">
+          <label>Líneas divisorias y Aro</label>
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="color-cell" style="flex:1;"><input type="color" id="cDivColor"><span>Color Línea Divisoria</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Grosor Div:</label><input type="range" class="range-in" id="divWidthIn" min="0" max="10" step="1"><span class="range-val" id="divWidthVal">4px</span></div>
+          </div>
+          <div class="slider-wrap"><label style="font-size:11px;color:var(--muted)">Grosor del Aro:</label><input type="range" class="range-in" id="rimWidthIn" min="1" max="12" step="1"><span class="range-val" id="rimWidthVal">3px</span></div>
+        </div>
+
+        <div class="field">
+          <label>Bombillos y Animación</label>
+          <div class="color-grid" style="margin-bottom:10px;">
+            <div class="color-cell"><input type="color" id="cBulbColor"><span>Color de los bombillos</span></div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Intensidad:</label><input type="range" class="range-in" id="bulbIntensityIn" min="0.1" max="1" step="0.05"><span class="range-val" id="bulbIntensityVal">0.4</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Tamaño:</label><input type="range" class="range-in" id="bulbSizeIn" min="0.5" max="2" step="0.1"><span class="range-val" id="bulbSizeVal">1</span></div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Cantidad:</label><input type="range" class="range-in" id="bulbCountIn" min="8" max="48" step="4"><span class="range-val" id="bulbCountVal">24</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Velocidad:</label><input type="range" class="range-in" id="bulbSpeedIn" min="20" max="300" step="5"><span class="range-val" id="bulbSpeedVal">85ms</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Texto y Zoom de Premios</label>
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="color-cell" style="flex:1;"><input type="color" id="cPrizeText"><span>Color Texto Premio</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Tamaño:</label><input type="range" class="range-in" id="prizeTextSizeIn" min="10" max="36" step="1"><span class="range-val" id="prizeTextSizeVal">22px</span></div>
+          </div>
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Zoom (con texto):</label><input type="range" class="range-in" id="imgZoomIn" min="0.5" max="1.8" step="0.1"><span class="range-val" id="imgZoomVal">1x</span></div>
+            <div class="slider-wrap" style="flex:1;"><label style="font-size:11px;color:var(--muted)">Contorno px:</label><input type="range" class="range-in" id="prizeTextStrokeIn" min="0" max="4" step="0.5"><span class="range-val" id="prizeTextStrokeVal">0</span></div>
+          </div>
+          <div class="slider-wrap" style="margin-bottom:10px;"><label style="font-size:11px;color:var(--muted)">Zoom (sin texto):</label><input type="range" class="range-in" id="imgZoomNoTextIn" min="0.5" max="2" step="0.1"><span class="range-val" id="imgZoomNoTextVal">1x</span></div>
+          <div class="color-grid">
+            <div class="color-cell"><input type="color" id="cPrizeStroke"><span>Color Contorno Texto</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Logo del centro</label>
+          <div class="media-row">
+            <div class="media-prev round" id="logoPrev">＋</div>
+            <div class="media-actions">
+              <button class="mini-btn" id="logoUpload">Subir imagen</button>
+              <button class="mini-btn ghost" id="logoRemove">Quitar</button>
+            </div>
+          </div>
+          <p class="rec-hint">Recomendado: <b>500×500 px</b>, formato <b>PNG</b> con fondo transparente.</p>
+        </div>
+
+        <div class="field">
+          <label>Pantalla de inicio — Estilo</label>
+          <div class="media-row">
+            <div class="media-prev round" id="introLogoPrev">＋</div>
+            <div class="media-actions">
+              <button class="mini-btn" id="introLogoUpload">Logo de inicio</button>
+              <button class="mini-btn ghost" id="introLogoRemove">Quitar</button>
+            </div>
+          </div>
+          <p class="rec-hint">Logo de inicio — se adapta a las proporciones de tu imagen (no se deforma ni se recorta). Recomendado: formato <b>PNG</b> transparente, hasta <b>600 px</b> en su lado más largo.</p>
+          <div class="slider-wrap" style="margin-top:10px"><label style="font-size:11px;color:var(--muted)">Tamaño del logo:</label><input type="range" class="range-in" id="introLogoSizeIn" min="0.5" max="2" step="0.1"><span class="range-val" id="introLogoSizeVal">1x</span></div>
+          <div class="media-row">
+            <div class="media-prev" id="introBgPrev">＋</div>
+            <div class="media-actions">
+              <button class="mini-btn" id="introBgUpload">Fondo de inicio</button>
+              <button class="mini-btn ghost" id="introBgRemove">Quitar</button>
+            </div>
+          </div>
+          <p class="rec-hint">Fondo de inicio — Recomendado: <b>1080×1920 px</b> (vertical), <b>JPG o PNG</b>.</p>
+        </div>
+
+        <div class="field">
+          <label>Colores de la marca</label>
+          <div class="color-grid">
+            <div class="color-cell"><input type="color" id="cBg"><span>Fondo</span></div>
+            <div class="color-cell"><input type="color" id="cAccent"><span>Principal</span></div>
+            <div class="color-cell"><input type="color" id="cAccent2"><span>Secundario</span></div>
+            <div class="color-cell"><input type="color" id="cFrame"><span>Aro y puntero</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Imagen de fondo</label>
+          <p class="hint">Si subes una imagen, reemplaza el color de fondo en la pantalla de juego.</p>
+          <div class="media-row">
+            <div class="media-prev" id="bgPrev">＋</div>
+            <div class="media-actions">
+              <button class="mini-btn" id="bgUpload">Subir imagen</button>
+              <button class="mini-btn ghost" id="bgRemove">Quitar</button>
+            </div>
+          </div>
+          <p class="rec-hint">Recomendado: <b>1080×1920 px</b> (vertical) o <b>1920×1080</b>, formato <b>JPG o PNG</b>.</p>
+        </div>
+        <div class="field">
+          <label>Colores de los segmentos</label>
+          <div class="seg" id="segMode">
+            <button data-m="alt">Alternados</button>
+            <button data-m="individual">Individual</button>
+          </div>
+          <div id="altColors" style="margin-top:12px">
+            <div class="color-grid">
+              <div class="color-cell"><input type="color" id="altA"><span>Color A</span></div>
+              <div class="color-cell"><input type="color" id="altB"><span>Color B</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Textos ---------- -->
+      <div class="tab-panel" data-panel="textos">
+        <div class="field">
+          <label>Texto del Encabezado</label>
+          <input class="text-in" id="headerTextIn" placeholder="Ej. Ruleta de Premios">
+        </div>
+        <div class="field">
+          <label>Texto del botón</label>
+          <input class="text-in" id="btnTextIn" placeholder="Ej. Girar">
+        </div>
+        <div class="field">
+          <label>Pantalla de inicio — Textos</label>
+          <input class="text-in" id="introTitleIn" placeholder="Título (ej. ¡Gira y Gana!)" style="margin-bottom:10px">
+          <input class="text-in" id="introBtnTextIn" placeholder="Texto del botón (ej. Toca para jugar)">
+        </div>
+      </div>
+
+      <!-- ---------- Premios ---------- -->
+      <div class="tab-panel" data-panel="premios">
+        <div class="field">
+          <label>Premios</label>
+          <p class="hint">Los segmentos ahora son <b>todos del mismo tamaño</b>. La <b>probabilidad (1–100)</b> define solo qué tan seguido sale cada premio. El <b>stock</b> hace que el premio se oculte solo al agotarse (déjalo vacío para ilimitado).</p>
+          <p class="rec-hint">Imagen del premio — Recomendado: <b>300×300 px</b>, <b>PNG</b> con fondo transparente.</p>
+          <div id="prizeList" class="prizeList"></div>
+          <button class="add-btn" id="addPrize">＋ Agregar premio</button>
+          <button class="add-btn" id="resetStockBtn" style="margin-top:10px;border-style:solid;border-color:var(--accent);color:var(--accent)">🔄 Reiniciar premios (reponer stock)</button>
+        </div>
+      </div>
+
+      <!-- ---------- Ajustes ---------- -->
+      <div class="tab-panel" data-panel="ajustes">
+        <div class="field">
+          <label>Pantalla de inicio / espera</label>
+          <div class="seg" id="introMode" style="margin-bottom:10px">
+            <button data-i="on">Activada</button>
+            <button data-i="off">Desactivada</button>
+          </div>
+          <div class="slider-wrap" style="margin-top:14px"><label style="font-size:11px;color:var(--muted)">Tiempo de espera:</label><input type="range" class="range-in" id="idleIn" min="0" max="180" step="5"><span class="range-val" id="idleVal">45s</span></div>
+          <p class="rec-hint">La pantalla de espera aparece sola tras este tiempo sin uso. En <b>0</b> queda desactivada.</p>
+        </div>
+        <div class="field">
+          <label>Seguridad (código de administrador)</label>
+          <p class="hint">Este código se pide al tocar el engranaje para entrar a configuración. Cámbialo y guárdalo.</p>
+          <input class="text-in" id="adminCodeIn" inputmode="numeric" placeholder="Ej. 1234">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="backdrop" id="backdrop"></div>
+  <section class="win-sheet" id="winSheet">
+    <div class="grip"></div>
+    <div class="win-eyebrow">Ganaste</div>
+    <img class="win-img" id="winImg" alt="">
+    <div class="win-prize" id="winnerText">—</div>
+    <button class="primary" id="winClose">Girar de nuevo</button>
+  </section>
+
+  <canvas id="confetti"></canvas>
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal código admin -->
+  <div class="pin-modal" id="pinModal">
+    <div class="pin-card">
+      <h3>Código de administrador</h3>
+      <p class="sub">Ingresa el código para editar la apariencia.</p>
+      <input class="pin-input" id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="••••">
+      <div class="pin-err" id="pinErr"></div>
+      <div class="pin-actions">
+        <button class="ghost" id="pinCancel">Cancelar</button>
+        <button class="ok" id="pinOk">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="filePick" accept="image/*" style="display:none">
+  <input type="file" id="tplFilePick" accept="application/json,.json" style="display:none">
+<script src="js/app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js");
+    });
+}
+</script>
+</body>
+</html>
